@@ -1,1 +1,1 @@
-include ':app', ':ubiquitousweather', ':weatherlibrary', ':weatherassetslibrary'
+include ':app', ':ubiquitousweather'
