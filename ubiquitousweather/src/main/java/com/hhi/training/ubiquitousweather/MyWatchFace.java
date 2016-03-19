@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -35,6 +36,8 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.WindowInsets;
+
+import com.google.android.gms.wearable.Asset;
 
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
@@ -68,7 +71,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
         return new Engine();
     }
 
-    private class Engine extends CanvasWatchFaceService.Engine {
+    private class Engine extends CanvasWatchFaceService.Engine implements IDisplayCallback{
         private final String LOG_TAG = Engine.class.getSimpleName();
         final Handler mUpdateTimeHandler = new EngineHandler(this);
 
@@ -94,6 +97,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
         Calendar mCal;
         int mTapCount;
         String mTemps;
+        Bitmap mWeatherIcon;
         /**
          * Whether the display supports fewer bits for each color in ambient mode. When true, we
          * disable anti-aliasing in ambient mode.
@@ -129,6 +133,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
             mTextTimeFormat = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault());
 
             mTemps = "32" + (char) 0x00B0 + "/78" + (char) 0x00B0;
+            mWeatherIcon = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.ic_clear);
 
             mTime = new Time();
 
@@ -216,9 +221,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
             } else {
                 canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mBackgroundPaint);
                 canvas.drawText(mTemps, (centerY + (centerY / 2)) - (mTemps.length() * 7), centerX + (centerX / 2), mTextPaint);
-                canvas.drawBitmap(BitmapFactory.
-                                decodeResource(MyWatchFace.this.getResources()
-                                        , Utility.getIconResourceForWeatherCondition())
+                canvas.drawBitmap(mWeatherIcon
                                 , centerY*2
                                 , centerX/2
                                 , mBackgroundPaint
@@ -328,6 +331,12 @@ public class MyWatchFace extends CanvasWatchFaceService {
                 mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
             }
         }
+
+        public void setData(double high, double low, Bitmap icon){
+            mWeatherIcon = icon;
+            mTemps = low + (char) 0x00B0 + "/" + high + (char) 0x00B0;
+
+        }
     }
 
     private static class EngineHandler extends Handler {
@@ -349,4 +358,6 @@ public class MyWatchFace extends CanvasWatchFaceService {
             }
         }
     }
+
+
 }
