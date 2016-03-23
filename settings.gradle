@@ -1,1 +1,1 @@
-include ':app', ':ubiquitousweather'
+include ':app', ':ubiquitousweather', ':sharedlibrary'

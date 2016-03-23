@@ -33,6 +33,7 @@ import com.bumptech.glide.Glide;
 import com.example.android.sunshine.app.BuildConfig;
 import com.example.android.sunshine.app.MainActivity;
 import com.example.android.sunshine.app.R;
+import com.example.android.sunshine.app.SendWearData;
 import com.example.android.sunshine.app.Utility;
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.muzei.WeatherMuzeiSource;
@@ -347,6 +348,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 updateWidgets();
                 updateMuzei();
                 notifyWeather();
+
             }
             Log.d(LOG_TAG, "Sync Complete. " + cVVector.size() + " Inserted");
             setLocationStatus(getContext(), LOCATION_STATUS_OK);
@@ -375,6 +377,8 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                     .setClass(context, WeatherMuzeiSource.class));
         }
     }
+
+
 
     private void notifyWeather() {
         Context context = getContext();
@@ -483,22 +487,6 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private void notifyWatch(int high, int low, int weatherId){
-        try {
-            JSONObject watchData = new JSONObject();
-
-            watchData.put("high", high);
-            watchData.put("low", low);
-            watchData.put("id", weatherId);
-
-
-
-        }catch (JSONException e){
-            Log.e(LOG_TAG, e.toString());
-        }
-
-
-    }
 
     /**
      * Helper method to handle insertion of a new location in the weather database.
